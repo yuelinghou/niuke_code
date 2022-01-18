@@ -1,141 +1,134 @@
-// 单词识别 
-//#include<string>
-//#include<iostream>
-//#include<map>
+//// 电话号码 
+//#include <set>
+//#include <string>
+//#include <vector>
+//#include <iostream>
 //using namespace std;
 //
-//int main()
-//{
-//    string s;
-//    string tmp;
-//    map<string, int> um;
-//    getline(cin, s);
-//    // 1、抽离每一个单词，插入到um中并统计次数
-//    for(const auto e : s)
-//    {
-//        if(e == ' ' || e == ',' || e == '.')
-//        {
-//        	if(tmp != "") 
-//            	++um[tmp];
-//            tmp = "";
-//        }
-//        else 
-//        {
-//            tmp += tolower(e);
-//        }
-//    }
-//    // 2、按照单词字典序输出单词和次数
-//    for(const auto& e : um)
-//    {
-//        cout<<e.first<<':'<<e.second<<endl;
-//    }
-//    return 0;
-//}
-
-// 五子棋
-//#include<string>
-//#include<vector>
-//#include<iostream>
-//using namespace std;
+//string getDigit = "22233344455566677778889999";
 //
-//void IsWin(const vector<string>& board)
+//// 转换成数字形式的号码，并去除重复的部分
+//string GetPhoneNumber(const string& s)
 //{
-//	for(int i = 0; i < 20; ++i)
+//	string ret;
+//	for(const auto e : s)
 //	{
-//		for(int j = 0; j < 20; ++j)
-//		{
-//			if(board[i][j] == '.')
-//			{
-//				continue;
-//			}
-//			int right = 1;
-//			int right_down = 1;
-//			int down = 1;
-//			int left_down = 1;
-//			for(int t = 1; t < 5; ++t)
-//			{
-//				if(j < 16 && board[i][j+t] == board[i][j])
-//					++right;
-//				if(i < 16 && j < 16 && board[i+t][j+t] == board[i][j])
-//					++right_down;
-//				if(i < 16 && board[i+t][j] == board[i][j])
-//					++down;
-//				if(i < 16 && j > 3 && board[i+t][j-t] == board[i][j])
-//					++left_down;
-//			}
-//			if(right == 5 || right_down == 5 || down == 5 || left_down == 5)
-//			{
-//				cout<<"Yes"<<endl;
-//				return;
-//			}
-//		}
+//		if(e >= '0' && e <= '9')
+//			ret += e;
+//		else if(e >= 'A' && e <= 'Z')
+//			ret += getDigit[e - 'A'];
 //	}
-//	cout<<"No"<<endl;
+//	ret.insert(ret.begin() + 3, '-');
+//	return ret;
 //}
 //
-//int main()
+//int main(int argc, char** argv) 
 //{
-//	vector<string> board(20);
-//	while(cin>>board[0])
+//	int n = 0;
+//	while(cin>>n)
 //	{
-//		for(int i = 1; i < 20; ++i)
+//		// 1、数据输入 
+//		vector<string> arr(n);
+//		for(int i = 0; i < n; ++i)
 //		{
-//			cin>>board[i];
+//			cin>>arr[i];
 //		}
-//		IsWin(board);
+//		// 2、数据处理 
+//		set<string> se; 
+//		for(int i = 0; i < n; ++i)
+//		{
+//			se.insert(GetPhoneNumber(arr[i]));
+//		}
+//		// 3、数据输出
+//		for(const auto& e : se)
+//		{
+//			cout<<e<<endl;	
+//		} 
+//		cout<<endl;
 //	}
 //	return 0;
 //}
 
-// 求和
-//通过搜索，分为两种情况：选择、不选择
-//如果选择当前值，那么背包空间和val都需要加到背包
-//如果不选择，那么背包就是上一次的
+//// 骆驼命名法
+//// 解题思路：
+//// 遍历输入的字符串，遇到'_'就把后一个字符变为大写；其他的就是字符，直接+=到ret中即可 
+//#include <string>
+//#include <iostream>
+//using namespace std;
 //
-//递归退出条件：m = 0，表示当前背包里面恰好就是结果，需要打印
-//m<0，表示当前背包已经不足，所以背包里面数字并不满足要求
-//start > n表示一轮遍历完毕
-#include<vector>
-#include<iostream>
+//// 2、数据处理 
+//string ToTump(string& s)
+//{
+//	string ret;
+//	for(size_t i = 0; i < s.size(); ++i)
+//	{
+//		if(s[i] == '_')
+//			s[i + 1] = toupper(s[i + 1]);
+//		else 
+//			ret += s[i];
+//	} 
+//	return ret;
+//}
+//
+//int main()
+//{
+//	string s;
+//	// 1、数据输入 
+//	while(cin>>s)
+//	{
+//		//3、数据输出 
+//		cout<<ToTump(s)<<endl;
+//	}
+//	return 0;
+//}
+
+// 单词倒排
+// 解题思路：把单词按顺序抽离出来放到一个数组中，在逆置数组，最后输出数组元素 
+#include <string>
+#include <vector>
+#include <iostream>
+#include <algorithm>
 using namespace std;
 
-void Func(int object, int n, int m, vector<int> pack)
+// 把单词抽离出来放到数组中 
+void WordInvertion(const string& s)
 {
-	if(m == 0)
+	string tmp;
+	vector<string> v;
+	for(const auto e : s)
 	{
-		for(size_t i = 0; i < pack.size(); ++i)
+		if(isalpha(e))
 		{
-			i == 0 ? cout<<pack[i] : cout<<' '<<pack[i];
+			tmp += e;
 		}
-		cout<<endl;
-		return;
+		else if(tmp != "")
+		{
+			v.push_back(tmp);
+			tmp.clear();
+		}
 	}
-	
-	if(object > n || m < 0)
+	reverse(v.begin(), v.end());
+	for(size_t i = 0; i < v.size(); ++i)
 	{
-		return;
-	}
-	
-	// 要
-	pack.push_back(object);
-	Func(object + 1, n, m - object, pack);
-	// 不要
-	pack.pop_back();
-	Func(object + 1, n, m, pack); 
+		if(i == 0)
+			cout<<v[i];
+		else 
+			cout<<' '<<v[i];
+	} 
+	cout<<endl;
 }
 
 int main()
 {
-	int n = 0; 
-	int m = 0;
-	while(cin>>n>>m)
+	// 1、数据输入 
+	string s;
+	while(getline(cin, s))
 	{
-		int hight = 1;
-		vector<int> pack;
-		Func(hight, n, m, pack);
+		// 2、数据处理 
+		WordInvertion(s + ' ');
 	}
-	return 0;	
-} 
+	return 0;
+}
 
 
 
@@ -148,7 +141,3 @@ int main()
 
 
 
-
-
-
- 
