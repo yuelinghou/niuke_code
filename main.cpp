@@ -1,131 +1,166 @@
-//// 电话号码 
-//#include <set>
+// 乒乓球框 
+// 解题思路：遍历s2，在s1中查找1s2的每一个字符，找到了就删除，找不到就返回"No"，最后遍历完了返回"Yes" 
+//#include <string>
+//#include <iostream>
+//using namespace std;
+//
+//string Func(string& s1, string& s2)
+//{
+//	for(const auto e : s2)
+//	{
+//		size_t pos = s1.find(e, 0);
+//		if(pos != string::npos)
+//		{
+//			s1.erase(pos, 1);
+//		}
+//		else 
+//		{
+//			return "No";
+//		}
+//	}
+//	return "Yes";
+//} 
+//
+//int main() 
+//{
+//	string s1;
+//	string s2;
+//	while(cin>>s1>>s2)
+//	{
+//		cout<<Func(s1, s2)<<endl;
+//	}
+//	return 0;
+//}
+
+// 查找兄弟单词
 //#include <string>
 //#include <vector>
 //#include <iostream>
+//#include <algorithm> 
 //using namespace std;
 //
-//string getDigit = "22233344455566677778889999";
-//
-//// 转换成数字形式的号码，并去除重复的部分
-//string GetPhoneNumber(const string& s)
+//// 判断是否为兄弟单词
+//// 1、两个单词长度相等
+//// 2、两个单词本身不相等
+//// 3、两个单词sort排序后相等 
+//bool IsBrotherWord(string s1, string s2)
 //{
-//	string ret;
-//	for(const auto e : s)
+//	if(s1.size() == s2.size())
 //	{
-//		if(e >= '0' && e <= '9')
-//			ret += e;
-//		else if(e >= 'A' && e <= 'Z')
-//			ret += getDigit[e - 'A'];
-//	}
-//	ret.insert(ret.begin() + 3, '-');
-//	return ret;
-//}
-//
-//int main(int argc, char** argv) 
-//{
-//	int n = 0;
-//	while(cin>>n)
-//	{
-//		// 1、数据输入 
-//		vector<string> arr(n);
-//		for(int i = 0; i < n; ++i)
+//		if(s1 != s2)
 //		{
-//			cin>>arr[i];
+//			sort(s1.begin(), s1.end());
+//			sort(s2.begin(), s2.end());
+//			if(s1 == s2)
+//				return true;
 //		}
-//		// 2、数据处理 
-//		set<string> se; 
-//		for(int i = 0; i < n; ++i)
-//		{
-//			se.insert(GetPhoneNumber(arr[i]));
-//		}
-//		// 3、数据输出
-//		for(const auto& e : se)
-//		{
-//			cout<<e<<endl;	
-//		} 
-//		cout<<endl;
 //	}
-//	return 0;
+//	return false;
 //}
-
-//// 骆驼命名法
-//// 解题思路：
-//// 遍历输入的字符串，遇到'_'就把后一个字符变为大写；其他的就是字符，直接+=到ret中即可 
-//#include <string>
-//#include <iostream>
-//using namespace std;
 //
-//// 2、数据处理 
-//string ToTump(string& s)
+//// 遍历词典（词典已事先按字典序排序好），看看每一个单词是否为word的兄弟单词
+//// 这个过程中统计词典中兄弟单词的个数和记录第k个兄弟单词 
+//void FindBrotherWord(const vector<string>& dict, const string& word, int k)
 //{
-//	string ret;
-//	for(size_t i = 0; i < s.size(); ++i)
+//	int count = 0;
+//	string kBrotherWord;
+//	for(const auto& e : dict)
 //	{
-//		if(s[i] == '_')
-//			s[i + 1] = toupper(s[i + 1]);
-//		else 
-//			ret += s[i];
-//	} 
-//	return ret;
-//}
+//		if(IsBrotherWord(e, word))
+//		{
+//			++count;
+//			if(count == k)
+//			{
+//				kBrotherWord = e;
+//			}
+//		}
+//	}
+//	cout<<count<<endl;
+//	if(kBrotherWord != "")
+//	{
+//		cout<<kBrotherWord<<endl;
+//	}
+//} 
 //
 //int main()
 //{
-//	string s;
+//	int n = 0;
+//	vector<string> dict;
+//	string word;
+//	int k = 0;
 //	// 1、数据输入 
-//	while(cin>>s)
+//	while(cin>>n)
 //	{
-//		//3、数据输出 
-//		cout<<ToTump(s)<<endl;
+//		dict.resize(n);
+//		for(size_t i = 0; i < n; ++i)
+//		{
+//			cin>>dict[i];
+//		}
+//		cin>>word>>k;
+//		// 2、数据处理 
+//		sort(dict.begin(), dict.end());
+//		FindBrotherWord(dict, word, k);
 //	}
 //	return 0;
 //}
 
-// 单词倒排
-// 解题思路：把单词按顺序抽离出来放到一个数组中，在逆置数组，最后输出数组元素 
+// Pre-Post
 #include <string>
-#include <vector>
 #include <iostream>
-#include <algorithm>
 using namespace std;
 
-// 把单词抽离出来放到数组中 
-void WordInvertion(const string& s)
+// C（m, n） =  A（m, n） / A（m, m） 
+long combinatorial(int m, int n)
 {
-	string tmp;
-	vector<string> v;
-	for(const auto e : s)
+	int a = 1;
+	int b = 1;
+	for(size_t i = 0; i < m; ++i)
 	{
-		if(isalpha(e))
-		{
-			tmp += e;
-		}
-		else if(tmp != "")
-		{
-			v.push_back(tmp);
-			tmp.clear();
-		}
+		a *= (n-i);
+		b *= (m-i);
 	}
-	reverse(v.begin(), v.end());
-	for(size_t i = 0; i < v.size(); ++i)
+	return a / b;
+}
+
+long dfs(int n, string s1, string s2)
+{
+	if(s1.size() == 1)
 	{
-		if(i == 0)
-			cout<<v[i];
-		else 
-			cout<<' '<<v[i];
-	} 
-	cout<<endl;
+		return 1;
+	}
+	else 
+	{
+		long sum = 1;
+		// 把根节点去除 
+		s1.erase(0, 1);
+		s2.erase(s2.size()-1, 1);
+		// 计算子树个数 
+		int count = 0;
+		while(s1.size() != 0)
+		{
+			size_t pos = s2.find(s1[0], 0);
+			string tmp1 = s1.substr(0, pos+1);
+			string tmp2 = s2.substr(0, pos+1);
+			s1 = s1.substr(pos+1);
+			s2 = s2.substr(pos+1);
+			++count;
+			sum *= dfs(n, tmp1, tmp2);
+		}
+		// 返回最终结果
+		return  combinatorial(count, n) * sum;
+	}
 }
 
 int main()
 {
+	int n = 0;
+	string s1;
+	string s2;
 	// 1、数据输入 
-	string s;
-	while(getline(cin, s))
+	while(cin>>n>>s1>>s2)
 	{
 		// 2、数据处理 
-		WordInvertion(s + ' ');
+		cout<<dfs(n, s1, s2)<<endl;
 	}
 	return 0;
 }
@@ -141,3 +176,12 @@ int main()
 
 
 
+
+
+
+
+
+
+
+
+ 
